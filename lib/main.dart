@@ -44,7 +44,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
-  
+
   final List<Widget> _screens = [
     const HomeScreen(),
     const FridgeScreen(),
@@ -61,11 +61,14 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Главная'),
-          BottomNavigationBarItem(icon: Icon(Icons.kitchen), label: 'Холодильник'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.kitchen), label: 'Холодильник'),
           BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Рецепты'),
           BottomNavigationBarItem(icon: Icon(Icons.water_drop), label: 'Вода'),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Статистика'),
-          BottomNavigationBarItem(icon: Icon(Icons.emoji_events), label: 'Достижения'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.bar_chart), label: 'Статистика'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.emoji_events), label: 'Достижения'),
         ],
         currentIndex: _selectedIndex,
         onTap: (index) {
