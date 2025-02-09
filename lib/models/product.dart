@@ -1,21 +1,16 @@
-
 class Product {
   final String id;
   final String name;
-  final double calories;
-  final double proteins;
-  final double fats;
-  final double carbs;
-  final double quantity;
-  final String unit;
+  final String category;
+  final DateTime expirationDate;
+  final int quantity;
+  final String unit; // e.g., "г", "шт", "мл"
 
   Product({
     required this.id,
     required this.name,
-    required this.calories,
-    required this.proteins,
-    required this.fats,
-    required this.carbs,
+    required this.category,
+    required this.expirationDate,
     required this.quantity,
     required this.unit,
   });
@@ -24,10 +19,8 @@ class Product {
     return {
       'id': id,
       'name': name,
-      'calories': calories,
-      'proteins': proteins,
-      'fats': fats,
-      'carbs': carbs,
+      'category': category,
+      'expirationDate': expirationDate.toIso8601String(),
       'quantity': quantity,
       'unit': unit,
     };
@@ -37,12 +30,28 @@ class Product {
     return Product(
       id: map['id'],
       name: map['name'],
-      calories: map['calories'],
-      proteins: map['proteins'],
-      fats: map['fats'],
-      carbs: map['carbs'],
+      category: map['category'],
+      expirationDate: DateTime.parse(map['expirationDate']),
       quantity: map['quantity'],
       unit: map['unit'],
+    );
+  }
+
+  Product copyWith({
+    String? id,
+    String? name,
+    String? category,
+    DateTime? expirationDate,
+    int? quantity,
+    String? unit,
+  }) {
+    return Product(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      category: category ?? this.category,
+      expirationDate: expirationDate ?? this.expirationDate,
+      quantity: quantity ?? this.quantity,
+      unit: unit ?? this.unit,
     );
   }
 }

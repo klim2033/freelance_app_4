@@ -1,17 +1,15 @@
-
-enum Gender { male, female }
-enum ActivityLevel { low, medium, high }
-enum Goal { loss, maintain, gain }
+import 'enums/gender.dart';
+import 'enums/activity_level.dart';
+import 'enums/goal_type.dart';
 
 class UserData {
-  final int? id;
-  final double weight;
-  final double height;
+  final String? id;
+  final int weight;
+  final int height;
   final int age;
   final Gender gender;
   final ActivityLevel activityLevel;
-  final Goal goal;
-  final double waterGoal;
+  final GoalType goal;
 
   UserData({
     this.id,
@@ -21,8 +19,24 @@ class UserData {
     required this.gender,
     required this.activityLevel,
     required this.goal,
-    this.waterGoal = 2000,
   });
+
+  double get bmr {
+    // Mifflin-St Jeor Formula
+    if (gender == Gender.male) {
+      return (10 * weight) + (6.25 * height) - (5 * age) + 5;
+    } else {
+      return (10 * weight) + (6.25 * height) - (5 * age) - 161;
+    }
+  }
+
+  double get tdee {
+    return bmr * activityLevel.factor;
+  }
+
+  double get dailyCalorieTarget {
+    return tdee + goal.calorieAdjustment;
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -30,10 +44,9 @@ class UserData {
       'weight': weight,
       'height': height,
       'age': age,
-      'gender': gender.toString().split('.').last,
-      'activity_level': activityLevel.toString().split('.').last,
-      'goal': goal.toString().split('.').last,
-      'water_goal': waterGoal,
+      'gender': gender.toString(),
+      'activityLevel': activityLevel.toString(),
+      'goal': goal.toString(),
     };
   }
 
@@ -44,46 +57,34 @@ class UserData {
       height: map['height'],
       age: map['age'],
       gender: Gender.values.firstWhere(
-          (e) => e.toString().split('.').last == map['gender']),
+        (e) => e.toString() == map['gender'],
+      ),
       activityLevel: ActivityLevel.values.firstWhere(
-          (e) => e.toString().split('.').last == map['activity_level']),
-      goal: Goal.values
-          .firstWhere((e) => e.toString().split('.').last == map['goal']),
-      waterGoal: map['water_goal'],
+        (e) => e.toString() == map['activityLevel'],
+      ),
+      goal: GoalType.values.firstWhere(
+        (e) => e.toString() == map['goal'],
+      ),
     );
   }
 
-  double calculateDailyCalories() {
-    // Harris-Benedict formula
-    double bmr;
-    if (gender == Gender.male) {
-      bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
-    } else {
-      bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
-    }
-
-    // Activity multiplier
-    double activityMultiplier;
-    switch (activityLevel) {
-      case ActivityLevel.low:
-        activityMultiplier = 1.2;
-      case ActivityLevel.medium:
-        activityMultiplier = 1.55;
-      case ActivityLevel.high:
-        activityMultiplier = 1.725;
-    }
-
-    // Goal adjustment
-    double goalMultiplier;
-    switch (goal) {
-      case Goal.loss:
-        goalMultiplier = 0.85;
-      case Goal.maintain:
-        goalMultiplier = 1.0;
-      case Goal.gain:
-        goalMultiplier = 1.15;
-    }
-
-    return bmr * activityMultiplier * goalMultiplier;
+  UserData copyWith({
+    String? id,
+    int? weight,
+    int? height,
+    int? age,
+    Gender? gender,
+    ActivityLevel? activityLevel,
+    GoalType? goal,
+  }) {
+    return UserData(
+      id: id ?? this.id,
+      weight: weight ?? this.weight,
+      height: height ?? this.height,
+      age: age ?? this.age,
+      gender: gender ?? this.gender,
+      activityLevel: activityLevel ?? this.activityLevel,
+      goal: goal ?? this.goal,
+    );
   }
 }

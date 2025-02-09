@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'services/notification_service.dart';
 import 'screens/home_screen.dart';
 import 'screens/fridge_screen.dart';
 import 'screens/recipes_screen.dart';
@@ -11,7 +14,20 @@ void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    runApp(const MyApp());
+    final prefs = await SharedPreferences.getInstance();
+
+    // Initialize notification service
+    await NotificationService().init();
+
+    runApp(
+      MultiProvider(
+        providers: [
+          Provider<SharedPreferences>.value(value: prefs),
+          // ... rest of your providers
+        ],
+        child: const MyApp(),
+      ),
+    );
   } catch (e) {
     debugPrint('Initialization error: $e');
     // Добавьте здесь обработку ошибок если нужно
